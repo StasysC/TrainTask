@@ -3,18 +3,18 @@ package Model;
 import java.util.*;
 
 public class Trip {
-    String _id;
+//    String _id;
     String _version;
     String _train;
     List<String> _stations = new LinkedList<>();
 
-    public String getId() {
-        return _id;
-    }
-
-    public void setId(String _id) {
-        this._id = _id;
-    }
+//    public String getId() {
+//        return _id;
+//    }
+//
+//    public void setId(String _id) {
+//        this._id = _id;
+//    }
 
     public String getVersion() {
         return _version;

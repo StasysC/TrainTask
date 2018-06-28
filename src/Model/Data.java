@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Data {
+    Trip _trip = new Trip();
     //******* Trains data *************
     LinkedHashMap<String, List<String>> _trainsData = new LinkedHashMap();
 
@@ -26,12 +27,12 @@ public class Data {
     }
 
     //******* Trips data **************
-    LinkedHashMap<String, List<String>> _tripsData = new LinkedHashMap();
+    LinkedHashMap<String, Trip> _tripsData = new LinkedHashMap();
 
-    public LinkedHashMap<String, List<String>> getTripsData() {
+    public LinkedHashMap<String, Trip> getTripsData() {
         return _tripsData;
     }
-    public void setTripsData(String _id, List<String> _dataFiller) {
+    public void setTripsData(String _id, Trip _dataFiller) {
         _tripsData.put(_id, _dataFiller);
     }
 }

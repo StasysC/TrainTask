@@ -47,9 +47,17 @@ public class ReadXML {
 //            stationSize++;
 //        }
 //        System.out.println(stationSize);//
+//        int tripsSize = 0;
+//        for (Map.Entry<String, List<String>> i : _data.getTripsData().entrySet()) {
+//            System.out.println("ID: " + i.getKey() + " Version: " + i.getValue().get(0) + " Train: " + i.getValue().get(1));
+//            tripsSize++;
+//        }
+//        System.out.println(tripsSize);
         int tripsSize = 0;
-        for (Map.Entry<String, List<String>> i : _data.getTripsData().entrySet()) {
-            System.out.println("ID: " + i.getKey() + " Version: " + i.getValue().get(0) + " Train: " + i.getValue().get(1));
+        for (Map.Entry<String, Trip> i : _data.getTripsData().entrySet()) {
+            String train = i.getValue().getTrain();
+            String version = i.getValue().getVersion();
+            System.out.println("ID: " + i.getKey() + " Train: " + train + " Version: " + version + " ");
             tripsSize++;
         }
         System.out.println(tripsSize);
@@ -64,27 +72,26 @@ public class ReadXML {
             Node node = nodeList.item(j);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element = (Element) node;
-                chooseElementData(element, rootNode, document);
+                chooseElementData(element, rootNode);
             }
-
         }
     }
 
-    private void chooseElementData(Element element, String rootNode, Document document) {
+    private void chooseElementData(Element element, String rootNode) {
         switch (rootNode) {
             case "station":
-                readStationsData(element, rootNode);
+                readStationsData(element);
                 break;
             case "train":
-                readTrainsData(element, rootNode);
+                readTrainsData(element);
                 break;
             case "trip":
-                readTripsData(element, rootNode, document);
+                readTripsData(element);
                 break;
         }
     }
 
-    private void readStationsData(Element element, String rootNode) {
+    private void readStationsData(Element element) {
         String id = element.getElementsByTagName("id").item(0).getTextContent();
         String version = element.getAttribute("version");
         String name = element.getElementsByTagName("name").item(0).getTextContent();
@@ -97,7 +104,7 @@ public class ReadXML {
         _data.setStationsData(name, dataFiller);
     }
 
-    private void readTrainsData(Element element, String rootNode) {
+    private void readTrainsData(Element element) {
         String id = element.getElementsByTagName("id").item(0).getTextContent();
         String version = element.getAttribute("version");
         String seats = element.getElementsByTagName("seats").item(0).getTextContent();
@@ -110,31 +117,32 @@ public class ReadXML {
         _data.setTrainsData(id, dataFiller);
     }
 
-    private void readTripsData(Element element, String rootNode, Document document) {
+    private void readTripsData(Element element) {
         String id = element.getElementsByTagName("id").item(0).getTextContent();
         String version = element.getAttribute("version");
         String train = element.getElementsByTagName("train").item(0).getTextContent();
-        String subStation;
-        NodeList subList = document.getElementsByTagName("stations");
-//        System.out.println(subList.getLength());
-        for (int j = 0; j < subList.getLength(); j++) {
-            Node subNode = subList.item(j);
-            if (subNode.getNodeType() == Node.ELEMENT_NODE) {
-                Element subElement = (Element) subNode;
-                subStation = subElement.getElementsByTagName("station").item(0).getTextContent();
-//                System.out.println("Substation ---------> "+subStation);
+        Trip _tmpTrip = new Trip();
+        List<String> subStation = new LinkedList<>();
+        NodeList subNodeListLenght = element.getElementsByTagName("station");
+        NodeList subNodeList = element.getElementsByTagName("stations");
+        for (int j = 0; j < subNodeList.getLength(); j++) {
+            Node subNode = subNodeList.item(j);
+            for (int k = 0; k < subNodeListLenght.getLength(); k++) {
+                if (subNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element subElement = (Element) subNode;
+                    String tmpStation = subElement.getElementsByTagName("station").item(k).getTextContent();
+                    subStation.add(tmpStation);
+                }
             }
-
         }
-//        String subStation = element.getElementsByTagName("train").item(0).getTextContent();
+        _tmpTrip.setTrain(train);
+        _tmpTrip.setVersion(version);
+        _tmpTrip.setStations(subStation);
 
-        List<String> dataFiller = new LinkedList<>();
-        dataFiller.add(version);
-        dataFiller.add(train);
         if (_data.getTripsData().containsKey(id)) {
             System.out.println("DUBLIKATAS ------------------------------------>" + id);
         }
-        _data.setTripsData(id, dataFiller);
+        _data.setTripsData(id, _tmpTrip);
     }
 
 
