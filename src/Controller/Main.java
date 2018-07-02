@@ -10,6 +10,7 @@ import java.util.*;
 public class Main {
     ReadXML _readXML = new ReadXML();
     Data _data = _readXML.getData();
+    LinkedHashMap<String, List<String>> _trainVisitedStation = new LinkedHashMap<>();
     LinkedHashMap<String, Trip> _trips = _data.getTripsData();
     LinkedHashMap<String, Trip> _dublicateTrips = _data.getTripsDublicateData();
     LinkedHashMap<String, List<String>> _stations = _data.getStationsData();
@@ -29,24 +30,30 @@ public class Main {
 
             List<String> currentTripStations = currentTrip.getStations();
             List<String> visitedStations = new LinkedList<>();
+            List<String> stationFiller = new LinkedList<>();
             boolean goodTrip = false;
             for (String station : currentTripStations) {
                 visitedStations = _stations.get(station);
                 try {
-                    String visitedStationID = visitedStations.get(0);
+                    String visitedStationVersion = visitedStations.get(0);
+                    String visitedStationName = visitedStations.get(1);
                     String currentTripVersion = currentTrip.getVersion();
+
                     try {
+
                         List<String> train = _trains.get(currentTrip.getTrain());
                         String currentTrainVersion = train.get(0);
-                        if (currentTrainVersion.equals(currentTripVersion) &&
-                                visitedStationID.equals(currentTripVersion)) {
+                        if (currentTrainVersion.equals(currentTripVersion)) {
+                            if(currentTrainVersion.equals(visitedStationVersion))
+                                stationFiller.add(visitedStationName);
+//                                _trainVisitedStation.put(,stationFiller);
                             goodTrip = true;
                         } else {
                             goodTrip = false;
                             break;
                         }
                     } catch (NullPointerException e) {
-//                System.out.println("TRIPS DONT HAVE TRAINS ------->" + tripKey);
+                System.out.println("TRIPS DONT HAVE TRAINS ------->" + tripKey);
                     }
                 } catch (NullPointerException e) {
 
