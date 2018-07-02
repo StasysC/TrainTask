@@ -38,6 +38,17 @@ public class Data {
         _stationsData.put(_id, _dataFiller);
     }
 
+    //********** Dublicate stations data *********
+    LinkedHashMap<String, List<String>> _stationsDublicateData = new LinkedHashMap();
+
+    public LinkedHashMap<String, List<String>> getStationsDublicateData() {
+        return _stationsDublicateData;
+    }
+
+    public void setStationsDublicateData(String _id, List<String> _dataFiller) {
+        _stationsDublicateData.put(_id, _dataFiller);
+    }
+
     //******* Trips data **************
     LinkedHashMap<String, Trip> _tripsData = new LinkedHashMap();
 

@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
 
 public class ReadXML {
     static int FILES_COUNT = 10;
@@ -46,37 +46,6 @@ public class ReadXML {
             return;
         }
 
-        //*****FOR TESTING*********
-//        int trainSize = 0;
-//        for (Map.Entry<String, List<String>> i : _data.getStationsData().entrySet()) {
-//            System.out.println("Name: " + i.getKey() + " Version: " + i.getValue().get(0) + " ID: " + i.getValue().get(1));
-//            trainSize++;
-//        }
-//        System.out.println(trainSize);
-//
-//        int stationSize = 0;
-//        for (Map.Entry<String, List<String>> i : _data.getTrainsData().entrySet()) {
-//            System.out.println("ID: " + i.getKey() + " Version: " + i.getValue().get(0) + " Seats: " + i.getValue().get(1));
-//            stationSize++;
-//        }
-//        System.out.println(stationSize);//
-//        int tripsSize = 0;
-//        for (Map.Entry<String, List<String>> i : _data.getTripsData().entrySet()) {
-//            System.out.println("ID: " + i.getKey() + " Version: " + i.getValue().get(0) + " Train: " + i.getValue().get(1));
-//            tripsSize++;
-//        }
-//        System.out.println(tripsSize);
-//        int tripsSize = 0;
-//        for (Map.Entry<String, Trip> i : _data.getTripsData().entrySet()) {
-//            String train = i.getValue().getTrain();
-//            String version = i.getValue().getVersion();
-//            System.out.println("ID: " + i.getKey() + " Train: " + train + " Version: " + version + " ");
-//            tripsSize++;
-//        }
-//        System.out.println(tripsSize);
-
-
-        //************************
     }
 
     private void chosenFile(String rootNode, Document document) {
@@ -110,11 +79,14 @@ public class ReadXML {
         String name = element.getElementsByTagName("name").item(0).getTextContent();
         List<String> dataFiller = new LinkedList<>();
         dataFiller.add(version);
-        dataFiller.add(id);
-//        if(_data.getStationsData().containsKey(id)){
-//            System.out.println("DUBLIKATAS ------------------------------------>"+ name);
-//        }
-        _data.setStationsData(name, dataFiller);
+        dataFiller.add(name);
+
+        if (_data.getStationsData().containsKey(id)) {
+            _data.setStationsDublicateData(id, dataFiller);
+//            System.out.println("STATION DUBLIKATAS ------------------------------------>" + id);
+        } else {
+            _data.setStationsData(id, dataFiller);
+        }
     }
 
     private void readTrainsData(Element element) {
