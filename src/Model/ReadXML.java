@@ -6,33 +6,46 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class ReadXML {
     static int FILES_COUNT = 10;
-    Data _data = new Data();
+    private Data _data = new Data();
 
-    public static void main(String[] args) {
-        ReadXML obj = new ReadXML();
-        obj.readXML("stations");
-        obj.readXML("trains");
-        obj.readXML("trips");
-
+    public Data getData() {
+        return _data;
     }
 
-    void readXML(String fileName) {
+    public ReadXML() {
+        for (int i = 0; i < FILES_COUNT; i++) {
+            readXML("stations", i);
+            readXML("trains", i);
+            readXML("trips", i);
+        }
+    }
 
-        // for (int i = 0; i < FILES_COUNT; i++) {
-        Document document = createDocument(fileName);
-        String root = document.getDocumentElement().getNodeName();
-        String rootNode = cutLastLetter(root);
-        chosenFile(rootNode, document);
+    void readXML(String fileName, int fileNumber) {
+        Document document = createDocument(fileName, fileNumber);
+        try {
+
+            String root = document.getDocumentElement().getNodeName();
+            String rootNode = cutLastLetter(root);
+            chosenFile(rootNode, document);
+
+        } catch (NullPointerException e) {
+            return;
+        }
+
         //*****FOR TESTING*********
 //        int trainSize = 0;
 //        for (Map.Entry<String, List<String>> i : _data.getStationsData().entrySet()) {
@@ -53,14 +66,14 @@ public class ReadXML {
 //            tripsSize++;
 //        }
 //        System.out.println(tripsSize);
-        int tripsSize = 0;
-        for (Map.Entry<String, Trip> i : _data.getTripsData().entrySet()) {
-            String train = i.getValue().getTrain();
-            String version = i.getValue().getVersion();
-            System.out.println("ID: " + i.getKey() + " Train: " + train + " Version: " + version + " ");
-            tripsSize++;
-        }
-        System.out.println(tripsSize);
+//        int tripsSize = 0;
+//        for (Map.Entry<String, Trip> i : _data.getTripsData().entrySet()) {
+//            String train = i.getValue().getTrain();
+//            String version = i.getValue().getVersion();
+//            System.out.println("ID: " + i.getKey() + " Train: " + train + " Version: " + version + " ");
+//            tripsSize++;
+//        }
+//        System.out.println(tripsSize);
 
 
         //************************
@@ -98,7 +111,7 @@ public class ReadXML {
         List<String> dataFiller = new LinkedList<>();
         dataFiller.add(version);
         dataFiller.add(id);
-//        if(_data.getTrainsData().containsKey(id)){
+//        if(_data.getStationsData().containsKey(id)){
 //            System.out.println("DUBLIKATAS ------------------------------------>"+ name);
 //        }
         _data.setStationsData(name, dataFiller);
@@ -112,9 +125,11 @@ public class ReadXML {
         dataFiller.add(version);
         dataFiller.add(seats);
         if (_data.getTrainsData().containsKey(id)) {
-            System.out.println("DUBLIKATAS ------------------------------------>" + id);
+            //System.out.println("TRAIN DUBLIKATAS ------------------------------------>" + id);
+            _data.setTrainsDublicateData(id, dataFiller);
+        } else {
+            _data.setTrainsData(id, dataFiller);
         }
-        _data.setTrainsData(id, dataFiller);
     }
 
     private void readTripsData(Element element) {
@@ -140,23 +155,33 @@ public class ReadXML {
         _tmpTrip.setStations(subStation);
 
         if (_data.getTripsData().containsKey(id)) {
-            System.out.println("DUBLIKATAS ------------------------------------>" + id);
+//               System.out.println("TRIP DUBLIKATAS ------------------------------------>" + id);
+            _data.setTripsDublicateData(id, _tmpTrip);
+        } else {
+            _data.setTripsData(id, _tmpTrip);
         }
-        _data.setTripsData(id, _tmpTrip);
     }
 
 
-    private Document createDocument(String fileName) {
+    private Document createDocument(String fileName, int fileNumber) {
         Document document = null;
         try {
-            File xmlFile = new File("Data/" + fileName + "." + 0 + ".xml");
+            File xmlFile = new File("Data/" + fileName + "." + fileNumber + ".xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             document = dBuilder.parse(xmlFile);
             document.getDocumentElement().normalize();
-        } catch (Exception e) {
+        } catch (SAXParseException e) {
+            System.out.println("File with error: " + fileName + "." + fileNumber + ".xml");
+            System.out.println("Wrong line: Somewhere between 1 and " + e.getLineNumber() + " line");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
+
         return document;
     }
 
