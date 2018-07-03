@@ -9,7 +9,6 @@ public class Application {
 
     void runApplictaion (){
         Main main  = new Main();
-        System.out.println("");
     }
 
 }

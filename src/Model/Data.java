@@ -1,7 +1,9 @@
 package Model;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Data {
     Trip _trip = new Trip();
@@ -69,6 +71,54 @@ public class Data {
 
     public void setTripsDublicateData(String _id, Trip _dataFiller) {
         _tripsDublicateData.put(_id, _dataFiller);
+    }
+
+
+    //******** Seats data**********************
+    LinkedHashMap<String, Integer> _seatsData = new LinkedHashMap<>();
+
+    public LinkedHashMap<String, Integer> getSeatsData() {
+        return _seatsData;
+    }
+
+    public void setSeatsData(String _station, Integer _seat) {
+        int tmp = getSeatsData().get(_station);
+        tmp += _seat;
+        this._seatsData.put(_station,tmp);
+    }
+
+
+    //******** Top Stations *******************
+    List<Map.Entry<String, Integer>> _topStations = new LinkedList<>();
+    public List<Map.Entry<String, Integer>> getTopStations() {
+        return _topStations;
+    }
+
+    public void setTopStations(List<Map.Entry<String, Integer>> _topStations) {
+        this._topStations = _topStations;
+    }
+
+
+    //*****************************************
+
+    //******** Discared trips data ************
+    List<String> _discardedTrips = new LinkedList<>();
+
+    public List<String> getDiscardedTrips() {
+        return _discardedTrips;
+    }
+
+    public void setDiscardedTrips(String _discardedTrips) {
+        this._discardedTrips.add(_discardedTrips);
+    }
+    //*********** Visited station data *************
+    LinkedHashMap<String, List<String>> _trainVisitedStation = new LinkedHashMap<>();
+    public LinkedHashMap<String, List<String>> getTrainVisitedStation() {
+        return _trainVisitedStation;
+    }
+
+    public void setTrainVisitedStation(LinkedHashMap<String, List<String>> _trainVisitedStation) {
+        this._trainVisitedStation = _trainVisitedStation;
     }
     //*****************************************
 }
